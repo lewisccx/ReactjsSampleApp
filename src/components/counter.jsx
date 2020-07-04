@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 
 class Counter  extends Component {
+
+    componentDidUpdate(prevProps, prevState){
+        console.log('presProps', prevProps)
+        console.log('prevState', prevState)
+    }
+
+    componentWillUnmount(){
+        console.log('Counter - unmounted')
+    }
     //data
     state = {
         address : {
             postcode: 518415
         } ,
-        count: 0,
+        //count: this.props.counter.value,
         tags:['tag1','tag2', 'tag3'],
         imageUrl: "https://picsum.photos/200"
     }
@@ -24,13 +33,17 @@ class Counter  extends Component {
 
     //view
     render() { 
+        console.log('Counter - Rendered');
         return ( 
         <React.Fragment>
             <img src={this.state.imageUrl} alt=""/>
+           <h4>Counter #{this.props.counter.id}</h4>
             <span style={this.styles} className={this.formatBadge()}>
                 {this.formatCount()}</span>
 
-            <button onClick={ () => this.handleIncrement({ id: 1})} className="btn btn-secondary btn-sm">Increment</button>
+                <button onClick={ () => this.props.onIncrement(this.props.counter)} className="btn btn-secondary btn-sm m-2">Increment</button>
+                <button onClick={()=>this.props.onDelete(this.props.counter.id)} className="btn btn-danger btn-sm m-2">Delete</button>
+            
             {/* true and string, print string */}
             {this.state.tags.length === 0 && 'Please create a new tag!'}
             {this.renderTags()}
@@ -40,13 +53,17 @@ class Counter  extends Component {
     }
 
     //methods
-
-
-    handleIncrement = (product) =>{
-        console.log("handled click", product)
-        //update view
-        this.setState({ count: this.state.count++})
-    }
+    // doHandleIncrement = () =>{
+    //     this.handleIncrement({ id: 1})
+    // }
+    // handleDecrement = product => {
+    //     //this.setState({ count: this.props.counter.value - 1 })
+    // }
+    // handleIncrement = product =>{
+    //     console.log("handled click", product)
+    //     //update view
+    //     this.setState({ count: this.props.counter.value + 1 })
+    // }
 
     renderTags(){
         const { tags } = this.state
@@ -56,11 +73,11 @@ class Counter  extends Component {
 
     formatBadge(){
         let badgeClasses = "badge m-2 badge-"
-        return badgeClasses += (this.state.count === 0) ? "primary" : "warning"
+        return badgeClasses += (this.props.counter.value === 0) ? "primary" : "warning"
     }
     formatCount(){
-        const { count } = this.state
-        return count === 0 ? <h1>Zero</h1> : count
+        const { value } = this.props.counter
+        return value === 0 ? <h1>Zero</h1> : value
     }
 }
  
